@@ -88,6 +88,7 @@ def run_test_go_and_stop():
             break
     robot.stop()
 
+
 def run_test_go_straight_for_seconds():
     """ Tests the   go_straight_for_seconds   method of SimpleRoseBot. """
     print()
@@ -129,6 +130,8 @@ def run_test_go_straight_until_black():
     #   go_straight_until_black   method of the SimpleRoseBot class,
     #   then use this function to test that method.
     # -------------------------------------------------------------------------
+    robot = SimpleRoseBot()
+    robot.go_straight_until_black(30)
 
 
 ###############################################################################
@@ -171,6 +174,9 @@ class SimpleRoseBot(object):
             if degrees >= degrees_to_go:
                 self.stop()
                 break
+
+    def go_straight_until_black(self, speed):
+        pass
 
 
 ###############################################################################
