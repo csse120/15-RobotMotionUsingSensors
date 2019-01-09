@@ -9,14 +9,15 @@ Authors: David Mutchler, Vibha Alangar, Matt Boutell, Dave Fisher,
 
 import ev3dev.ev3 as ev3
 import time
+import math
 
 
 def main():
     """ Calls the other functions to test/demo them. """
-    run_test_wait_for_seconds()
-    run_test_init()
-    run_test_go_and_stop()
-    run_test_go_straight_for_seconds()
+    # run_test_wait_for_seconds()
+    # run_test_init()
+    # run_test_go_and_stop()
+    # run_test_go_straight_for_seconds()
     run_test_go_straight_for_inches()
     run_test_go_straight_until_black()
 
@@ -99,7 +100,8 @@ def run_test_go_straight_for_seconds():
     #   then use this function to test that method.
     # -------------------------------------------------------------------------
     robot = SimpleRoseBot()
-    robot.go_straight_for_seconds(3, 50)
+    robot.go_straight_for_seconds(2.0, 50)
+
 
 def run_test_go_straight_for_inches():
     """ Tests the   go_straight_for_inches   method of SimpleRoseBot. """
@@ -112,6 +114,8 @@ def run_test_go_straight_for_inches():
     #   go_straight_for_inches   method of the SimpleRoseBot class,
     #   then use this function to test that method.
     # -------------------------------------------------------------------------
+    robot = SimpleRoseBot()
+    robot.go_straight_for_inches(12, 50)
 
 
 def run_test_go_straight_until_black():
@@ -156,12 +160,15 @@ class SimpleRoseBot(object):
                 break
 
     def go_straight_for_inches(self, inches, speed):
-        self.left_wheel_motor.reset_rotational_count()
-        end = inches * 1000  # FIXME
+        rotations_per_inch = 1 / Motor.WheelCircumference
+        degrees_per_rotation = 360
+        degrees_to_go = inches * rotations_per_inch * degrees_per_rotation
+
+        self.left_wheel_motor.reset_position()
         self.go(speed, speed)
         while True:
-            current = self.left_wheel_motor.get_rotational_count()
-            if current >= end:
+            degrees = self.left_wheel_motor.get_position()
+            if degrees >= degrees_to_go:
                 self.stop()
                 break
 
@@ -170,8 +177,7 @@ class SimpleRoseBot(object):
 # The  Motor   and   ColorSensor classes.  USE them, but do NOT modify them.
 ###############################################################################
 class Motor(object):
-    TachoCountsPerRotation = ev3.Motor.count_per_rot
-    WheelDiameter = 1.2  # FIXME: Get the right number.
+    WheelCircumference = 1.3 * math.pi
 
     def __init__(self, port):  # port must be 'B' or 'C' for left/right wheels
         self._motor = ev3.LargeMotor('out' + port)
@@ -182,10 +188,10 @@ class Motor(object):
     def turn_off(self):
         self._motor.stop(stop_action="brake")
 
-    def get_rotational_count(self):
+    def get_position(self):  # Units are degrees (that the motor has rotated).
         return self._motor.position
 
-    def reset_rotational_count(self):
+    def reset_position(self):
         self._motor.position = 0
 
 
