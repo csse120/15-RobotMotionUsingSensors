@@ -14,10 +14,10 @@ import math
 
 def main():
     """ Calls the other functions to test/demo them. """
-    # run_test_wait_for_seconds()
-    # run_test_init()
-    # run_test_go_and_stop()
-    # run_test_go_straight_for_seconds()
+    run_test_wait_for_seconds()
+    run_test_init()
+    run_test_go_and_stop()
+    run_test_go_straight_for_seconds()
     run_test_go_straight_for_inches()
     run_test_go_straight_until_black()
 
@@ -28,6 +28,10 @@ def run_test_wait_for_seconds():
     print('--------------------------------------------------')
     print('Testing the   wait_for_seconds   function:')
     print('--------------------------------------------------')
+
+    wait_for_seconds()
+
+    print('Here is a second test:')
     wait_for_seconds()
 
 
@@ -35,10 +39,14 @@ def wait_for_seconds():
     """ Prints Hello, waits for 3 seconds, then prints Goodbye. """
     # -------------------------------------------------------------------------
     # TODO: 2. With your instructor, implement and test this function.
-    #   IMPORTANT:  Do NOT use the    time.sleep   function.
+    #   IMPORTANT:  Do NOT use the    time.sleep   function
+    #               anywhere in this project.
+    #               (Exception: Use it in test-functions to separate tests.)
+    #
     #               Instead, use the   time.time   function
     #               that returns the number of seconds since "the Epoch"
     #               (January 1, 1970, 00:00:00 (UTC) on some platforms).
+    #
     #   The testing code is already written for you (above, in main).
     #   NOTE: this function has nothing to do with robots,
     #   but its concepts will be useful in the forthcoming robot exercises.
@@ -102,6 +110,8 @@ def run_test_go_straight_for_seconds():
     # -------------------------------------------------------------------------
     robot = SimpleRoseBot()
     robot.go_straight_for_seconds(2.0, 50)
+    time.sleep(1)
+    robot.go_straight_for_seconds(2.0, -100)
 
 
 def run_test_go_straight_for_inches():
@@ -116,7 +126,9 @@ def run_test_go_straight_for_inches():
     #   then use this function to test that method.
     # -------------------------------------------------------------------------
     robot = SimpleRoseBot()
-    robot.go_straight_for_inches(12, 50)
+    robot.go_straight_for_inches(12, 100)
+    time.sleep(3)
+    robot.go_straight_for_inches(6, 25)
 
 
 def run_test_go_straight_until_black():
@@ -132,6 +144,8 @@ def run_test_go_straight_until_black():
     # -------------------------------------------------------------------------
     robot = SimpleRoseBot()
     robot.go_straight_until_black(30)
+    time.sleep(2)
+    robot.go_straight_until_black(100)
 
 
 ###############################################################################
@@ -171,12 +185,17 @@ class SimpleRoseBot(object):
         self.go(speed, speed)
         while True:
             degrees = self.left_wheel_motor.get_position()
-            if degrees >= degrees_to_go:
+            if abs(degrees) >= degrees_to_go:
                 self.stop()
                 break
 
     def go_straight_until_black(self, speed):
-        pass
+        self.go(speed, speed)
+        while True:
+            light = self.color_sensor.get_reflected_light_intensity()
+            if light < 5:
+                self.stop()
+                break
 
 
 ###############################################################################
@@ -206,8 +225,8 @@ class ColorSensor(object):
         self._color_sensor = ev3.ColorSensor('in' + str(port))
 
     def get_reflected_light_intensity(self):
-        # Returned value is from XXX to YYY,
-        # but in practice more like XXX to YYY in our classroom lighting.
+        # Returned value is from 0 to 100,
+        # but in practice more like 3 to 90+ in our classroom lighting.
         return self._color_sensor.reflected_light_intensity
 
 
