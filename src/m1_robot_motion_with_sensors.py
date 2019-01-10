@@ -51,16 +51,6 @@ def wait_for_seconds():
     #   NOTE: this function has nothing to do with robots,
     #   but its concepts will be useful in the forthcoming robot exercises.
     # -------------------------------------------------------------------------
-    print('Hello')
-
-    start = time.time()
-    while True:
-        current = time.time()
-        if current - start > 3:
-            break
-
-    print('Goodbye')
-    print(start, current, current - start)  # Not required, but show students
 
 
 def run_test_init():
@@ -73,7 +63,6 @@ def run_test_init():
     # TODO: 3. Implement this function, then implement the   __init__   method
     #   of the SimpleRoseBot class, then use this function to test __init__.
     # -------------------------------------------------------------------------
-    SimpleRoseBot()
 
 
 def run_test_go_and_stop():
@@ -87,14 +76,6 @@ def run_test_go_and_stop():
     #   methods of the SimpleRoseBot class, then use this function
     #   to test both   go   and   stop   at the same time.
     # -------------------------------------------------------------------------
-    robot = SimpleRoseBot()
-    robot.go(70, 50)
-    start = time.time()
-    while True:
-        current = time.time()
-        if current - start > 3.0:
-            break
-    robot.stop()
 
 
 def run_test_go_straight_for_seconds():
@@ -108,10 +89,6 @@ def run_test_go_straight_for_seconds():
     #   go_straight_for_seconds   method of the SimpleRoseBot class,
     #   then use this function to test that method.
     # -------------------------------------------------------------------------
-    robot = SimpleRoseBot()
-    robot.go_straight_for_seconds(2.0, 50)
-    time.sleep(1)
-    robot.go_straight_for_seconds(2.0, -100)
 
 
 def run_test_go_straight_for_inches():
@@ -121,14 +98,10 @@ def run_test_go_straight_for_inches():
     print('Testing the   go_straight_for_inches   method of SimpleRoseBot:')
     print('--------------------------------------------------')
     # -------------------------------------------------------------------------
-    # TODO: 5. Implement this function, then implement the
+    # TODO: 6. Implement this function, then implement the
     #   go_straight_for_inches   method of the SimpleRoseBot class,
     #   then use this function to test that method.
     # -------------------------------------------------------------------------
-    robot = SimpleRoseBot()
-    robot.go_straight_for_inches(12, 100)
-    time.sleep(3)
-    robot.go_straight_for_inches(6, 25)
 
 
 def run_test_go_straight_until_black():
@@ -138,64 +111,16 @@ def run_test_go_straight_until_black():
     print('Testing the   go_straight_until_black   method of SimpleRoseBot:')
     print('--------------------------------------------------')
     # -------------------------------------------------------------------------
-    # TODO: 5. Implement this function, then implement the
+    # TODO: 7. Implement this function, then implement the
     #   go_straight_until_black   method of the SimpleRoseBot class,
     #   then use this function to test that method.
     # -------------------------------------------------------------------------
-    robot = SimpleRoseBot()
-    robot.go_straight_until_black(30)
-    time.sleep(2)
-    robot.go_straight_until_black(100)
 
 
 ###############################################################################
 # Put your   SimpleRoseBot    class here (below this comment).
 # Your instructor may help you get started.
 ###############################################################################
-class SimpleRoseBot(object):
-
-    def __init__(self):
-        self.left_wheel_motor = Motor("B")
-        self.right_wheel_motor = Motor("C")
-        self.color_sensor = ColorSensor(3)
-
-    def go(self, left_wheel_speed, right_wheel_speed):
-        self.left_wheel_motor.turn_on(left_wheel_speed)
-        self.right_wheel_motor.turn_on(right_wheel_speed)
-
-    def stop(self):
-        self.left_wheel_motor.turn_off()
-        self.right_wheel_motor.turn_off()
-
-    def go_straight_for_seconds(self, seconds, speed):
-        start = time.time()
-        self.go(speed, speed)
-        while True:
-            current = time.time()
-            if current - start >= seconds:
-                self.stop()
-                break
-
-    def go_straight_for_inches(self, inches, speed):
-        rotations_per_inch = 1 / Motor.WheelCircumference
-        degrees_per_rotation = 360
-        degrees_to_go = inches * rotations_per_inch * degrees_per_rotation
-
-        self.left_wheel_motor.reset_position()
-        self.go(speed, speed)
-        while True:
-            degrees = self.left_wheel_motor.get_position()
-            if abs(degrees) >= degrees_to_go:
-                self.stop()
-                break
-
-    def go_straight_until_black(self, speed):
-        self.go(speed, speed)
-        while True:
-            light = self.color_sensor.get_reflected_light_intensity()
-            if light < 5:
-                self.stop()
-                break
 
 
 ###############################################################################
